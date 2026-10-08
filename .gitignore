@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.env
+*.db
+node_modules/
+dist/
+ml/models/*.joblib
+ml/data/*.csv
+.pytest_cache/
+*.pkl

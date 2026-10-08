@@ -1,0 +1,10 @@
+{
+  "name": "AgriMarket",
+  "short_name": "AgriMarket",
+  "description": "Sell your crop where you keep the most",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f2f5f1",
+  "theme_color": "#1d6a43",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

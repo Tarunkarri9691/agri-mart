@@ -1,0 +1,6 @@
+{
+  "_note": "Minimum Support Prices in Rs per quintal. Values below are the 2025-26 notified prices as I recall them - VERIFY against the latest CACP / DA&FW notification before using in a report.",
+  "paddy": 2369,
+  "maize": 2400,
+  "cotton": 7710
+}

@@ -1,0 +1,27 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r backend/requirements.txt
+      - name: Backend tests
+        working-directory: backend
+        run: python -m pytest -q
+      - name: ML utility tests
+        run: python -m pytest ml/tests -q
+      - name: Migrations apply cleanly
+        working-directory: backend
+        env: { AUTO_CREATE_TABLES: "0", ENABLE_SCHEDULER: "0", DATABASE_URL: "sqlite:///./ci.db" }
+        run: alembic upgrade head
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm, cache-dependency-path: frontend/package.json }
+      - working-directory: frontend
+        run: npm install && npm test && npm run build

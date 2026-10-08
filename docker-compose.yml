@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: agri
+      POSTGRES_PASSWORD: agri
+      POSTGRES_DB: agri
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agri"]
+      interval: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg2://agri:agri@db:5432/agri
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-change-me}
+      CORS_ORIGINS: http://localhost:5173
+      USE_OSRM: ${USE_OSRM:-0}
+      NOTIFY_PROVIDER: ${NOTIFY_PROVIDER:-console}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+      TWILIO_FROM: ${TWILIO_FROM:-}
+      DATA_GOV_API_KEY: ${DATA_GOV_API_KEY:-}
+    depends_on:
+      db: { condition: service_healthy }
+    ports: ["8000:8000"]
+    volumes:
+      - ./ml/models:/srv/ml/models
+      - ./ml/data:/srv/ml/data
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:8000
+    ports: ["5173:80"]
+    depends_on: [backend]
+
+volumes:
+  pgdata:
